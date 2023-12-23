@@ -35,7 +35,7 @@ if [ "$CENTER_ATOM_NUMBER" -eq -1 ]; then
     echo "Final CENTER_ATOM_NUMBER is: $CENTER_ATOM_NUMBER"
 else
     # 如果CENTER_ATOM_NUMBER的值不是-1，直接输出其值
-    echo "CENTER_ATOM_NUMBER is not -1，is: $CENTER_ATOM_NUMBER"
+    echo "CENTER_ATOM_NUMBER is not -1, is: $CENTER_ATOM_NUMBER"
 fi
 echo "[ center ]\n $CENTER_ATOM_NUMBER" >> index_sel.ndx 
 echo 1 | gmx trjconv -f merged.xtc -s  step4.1_equilibration.gro -o whole.xtc -pbc whole
@@ -44,10 +44,13 @@ echo 1|gmx trjconv -f atom.xtc -s  npt_ab_protein.gro -o whole_atom_1atomcenter_
 rm -rfv whole_atom_1atomcenter.xtc
 # least squares fit:protein; center:protein
 echo 1 1 1|gmx trjconv  -s  npt_ab_protein.gro -f whole_atom_1atomcenter_nojump.xtc -fit rot+trans  -center -o atom_rottrans.xtc
-rm -rfv atom.xtc
-rm -rfv whole_atom_1atomcenter_nojump.xtc
+
 rm -rfv whole.xtc
+rm -rfv atom.xtc
+# rm -rfv whole_atom_1atomcenter_nojump.xtc
+echo "\n\n\n#################################"
 echo "Final CENTER_ATOM_NUMBER is: $CENTER_ATOM_NUMBER"
+echo "#################################"
 ##########################################################################################
 # atom pbc ONLY protein END
 ##########################################################################################
