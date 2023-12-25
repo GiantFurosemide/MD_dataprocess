@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
+import argparse
 
 log_columns = {
     "loop_ID":0,     
@@ -56,15 +57,39 @@ def plot_scatter_and_save(folder_path, x_column, y_column, output_csv):
     print(f"> save to {x_column}-vs-{y_column}.png")
     plt.clf()
 
+def add_parser():
+    # Create ArgumentParser object
+    parser = argparse.ArgumentParser(description='Plot log files')
+
+    # Add argument for folder_path with shorthand -f
+    parser.add_argument('-f', '--folder_path', type=str, help='Specify the folder path of log files')
+
+    # Parse the command-line arguments
+    args = parser.parse_args()
+
+    # Check if folder_path is provided
+    if args.folder_path:
+        folder_path = args.folder_path
+        print(f'folder_path is set to: {folder_path}')
+        return folder_path
+    else:
+        print('No folder_path provided. Please use -f or --folder_path to specify the folder path.')
+        return None
+
 if __name__ == "__main__":
-    folder_path = input(">Please input log_txt folder's name:\n>").strip()  # 替换为你的文件夹路径
-    #x_column = 'loop_ID'  # 选择x轴列
-    #y_column = 'pressure'  # 选择y轴列
+    #folder_path = input(">Please input log_txt folder's name:\n>").strip()  # 替换为你的文件夹路径
+
+    folder_path = add_parser()
+    # check folder_path
+    if folder_path is None:
+        print("Error: folder_path is None.")
+        exit()
+
     output_csv = "output.csv"  # 指定CSV文件名
 
     for k in list(log_columns.keys())[1:]:
         plot_scatter_and_save(folder_path, 'loop_ID', k, output_csv)
 
-    #plot_scatter_and_save(folder_path, 'loop_ID', 'pressure', output_csv)
-    #plot_scatter_and_save(folder_path, 'loop_ID', "kinetic", output_csv)
+    print("done!")
+       
 

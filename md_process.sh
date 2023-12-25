@@ -21,5 +21,8 @@ cd $WORK_DIR
 
 # deal with pbc and align to reference
 cp -v "$SCRIPTS_DIR/atom_only_pbc.sh" .
-source atom_only_pbc.sh
 echo "executing atom_only_pbc.sh ... "
+source atom_only_pbc.sh
+
+cp -v "$SCRIPTS_DIR/draw_log_plots.py" .
+python draw_log_plots.py -f log_txt 

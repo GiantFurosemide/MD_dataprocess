@@ -45,9 +45,9 @@ rm -rfv whole_atom_1atomcenter.xtc
 # least squares fit:protein; center:protein
 echo 1 1 1|gmx trjconv  -s  npt_ab_protein.gro -f whole_atom_1atomcenter_nojump.xtc -fit rot+trans  -center -o atom_rottrans.xtc
 
-rm -rfv whole.xtc
-rm -rfv atom.xtc
-# rm -rfv whole_atom_1atomcenter_nojump.xtc
+#rm -rfv whole.xtc
+#rm -rfv atom.xtc
+rm -rfv whole_atom_1atomcenter_nojump.xtc
 echo "\n\n\n#################################"
 echo "Final CENTER_ATOM_NUMBER is: $CENTER_ATOM_NUMBER"
 echo "#################################"
