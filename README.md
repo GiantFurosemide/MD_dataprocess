@@ -37,7 +37,7 @@ convert trr to xtc and merge all xtc files.
 
 Deal with PBC in two protocols. Check atom index for PBC treatment and centering manually and interact with scripts. Output with Atom Group 'protein' by default, update this script for other types of entities.
 
-### 2. useme.tcl
+### 5. useme.tcl
 
 Visualization by vmd:
 
