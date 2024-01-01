@@ -26,3 +26,7 @@ source atom_only_pbc.sh
 
 cp -v "$SCRIPTS_DIR/draw_log_plots.py" .
 python draw_log_plots.py -f log_txt 
+
+# cp useme.tcl to current directory
+cp -v "$SCRIPTS_DIR/useme.tcl" .
+vmd -e useme.tcl
