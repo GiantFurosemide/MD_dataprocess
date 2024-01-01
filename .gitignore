@@ -1,2 +1,8 @@
 .DS_Store
 backup
+gromacs_build_system_new.sh
+gromacs_build_system.sh
+post_process.sh
+runme.sh
+select_gmx.sh
+trr2xtc_split.py
