@@ -43,7 +43,8 @@ gmx trjconv -f whole.xtc -s  npt_ab_protein.gro -n index_sel.ndx -o atom.xtc -pb
 echo 1|gmx trjconv -f atom.xtc -s  npt_ab_protein.gro -o whole_atom_1atomcenter_nojump.xtc -pbc nojump 
 rm -rfv whole_atom_1atomcenter.xtc
 # least squares fit:protein; center:protein
-echo 1 1 1|gmx trjconv  -s  npt_ab_protein.gro -f whole_atom_1atomcenter_nojump.xtc -fit rot+trans  -center -o atom_rottrans.xtc
+echo 1 1 1|gmx trjconv  -s  npt_ab_protein.gro -f whole_atom_1atomcenter_nojump.xtc -fit rot+trans  -center -o atom_rottrans_nojump.xtc
+echo 1 1 1|gmx trjconv  -s  npt_ab_protein.gro -f atom.xtc -fit rot+trans  -center -o atom_rottrans.xtc
 
 #rm -rfv whole.xtc
 #rm -rfv atom.xtc
