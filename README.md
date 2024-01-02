@@ -54,5 +54,5 @@ Visualization by vmd:
 
 ## TODO
 
-* update automatically center atom selection, for example by centroid.
+* update automatic center atom selection, for example by centroid.
 * pbc nojump is not robust.
