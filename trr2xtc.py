@@ -7,6 +7,9 @@ def run_cmd(cmd:str):
 
 trr_files = glob.glob('./*.trr')
 gro_name= input('>Please input gro filename:\n>').strip()
+cmd=f"cp -v {gro_name} ../step4.1_equilibration.gro" # prepare gro file for next step
+run_cmd(cmd)
+
 for trr in trr_files:
 	filename  =  os.path.basename(trr).split('.')[0]
 	outname = filename+'.xtc'
