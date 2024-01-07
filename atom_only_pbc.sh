@@ -37,7 +37,8 @@ else
     # 如果CENTER_ATOM_NUMBER的值不是-1，直接输出其值
     echo "CENTER_ATOM_NUMBER is not -1, is: $CENTER_ATOM_NUMBER"
 fi
-echo "[ center ]\n $CENTER_ATOM_NUMBER" >> index_sel.ndx 
+echo "[ center ]" >> index_sel.ndx 
+echo "$CENTER_ATOM_NUMBER" >> index_sel.ndx 
 echo 1 | gmx trjconv -f merged.xtc -s  step4.1_equilibration.gro -o whole.xtc -pbc whole
 gmx trjconv -f whole.xtc -s  npt_ab_protein.gro -n index_sel.ndx -o atom.xtc -pbc atom  -center
 echo 1|gmx trjconv -f atom.xtc -s  npt_ab_protein.gro -o whole_atom_1atomcenter_nojump.xtc -pbc nojump 
