@@ -45,6 +45,10 @@ Visualization by vmd:
 * save visualization state to 'useme.vmd'
 * load trajectory 'atom_rottrans.xtc'
 
+### 6.draw_log_plots.py
+
+Read log files in directory 'log_txt', plot temperature/pressure/kinetic/potential/viral/lbox
+
 ## Usage
 
 1. updata variable SCRIPTS_DIR in md_process.sh to access to all neccesery scripts.
