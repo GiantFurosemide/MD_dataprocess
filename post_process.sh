@@ -20,7 +20,7 @@ echo "\n > Done! cp log.txt"
 
 
 # make coor_nc in customized dir
-MY_OUT_DIR='/ogfs/users/sldebug2/white_6W8I_BC5P_20240102_1us'
+MY_OUT_DIR='/ogfs/users/sldebug2/white_7KHH_Compound9_20231207_20240121_1'
 mkdir -p '../wangmu_check'
 mkdir -p ${MY_OUT_DIR}
 mkdir -p ${MY_OUT_DIR}/coor_nc
