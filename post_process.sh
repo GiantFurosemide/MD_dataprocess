@@ -28,7 +28,7 @@ mkdir -p ${MY_OUT_DIR}/log_txt
 cp -v ./*/*.trr ${MY_OUT_DIR}/coor_nc && cp -v ./*/*log.txt ${MY_OUT_DIR}/log_txt
 echo "\n > Done!"
 
-# make coor_nc in $PWD
+# make coor_nc in $PWD for GROMACS
 MY_OUT_DIR=$PWD
 mkdir -p '../wangmu_check'
 mkdir -p ${MY_OUT_DIR}
@@ -38,7 +38,7 @@ cp -v ./*/*.trr ${MY_OUT_DIR}/coor_nc && cp -v ./*/*log.txt ${MY_OUT_DIR}/log_tx
 echo "\n > Done!"
 
 
-# make coor_nc in $PWD, not cp just mv
+# make coor_nc in $PWD, not cp just mv for GROMACS
 MY_OUT_DIR=$PWD
 mkdir -p '../wangmu_check'
 mkdir -p ${MY_OUT_DIR}
@@ -51,6 +51,15 @@ trr2xtc_cp2here
 cd ..
 
 
+# make coor_nc in $PWD, not cp just mv for Amber
+MY_OUT_DIR=$PWD
+mkdir -p '../wangmu_check'
+mkdir -p ${MY_OUT_DIR}
+mkdir -p ${MY_OUT_DIR}/coor_nc
+mkdir -p ${MY_OUT_DIR}/log_txt
+mkdir -p ${MY_OUT_DIR}/vel_nc
+mv -v ./*/*_coor.nc ${MY_OUT_DIR}/coor_nc && mv -v ./*/*log.txt ${MY_OUT_DIR}/log_txt && mv -v ./*/*_vel.nc ${MY_OUT_DIR}/vel_nc
+echo "\n > Done!"
 
 
 mkdir coor_nc log_txt vel_nc
