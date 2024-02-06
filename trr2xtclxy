@@ -1,0 +1,48 @@
+import glob
+import os
+os.system("mkdir coor_nc")
+start, end = 0, 30
+for i in range(start, end):
+	if os.path.exists("./" + str(i)):
+		print(i)
+		cmd = f"cp {i}/*.trr coor_nc"
+		os.system(cmd)
+
+
+trr_files = glob.glob('coor_nc/*.trr')
+print(trr_files)
+
+gro_name= "./asyn-WT-box.gro"
+top_name="./asyn-WT.top"
+mdp_name="./eq.mdp"
+# convert trr to xtc for each trj
+for trr in trr_files:
+	filename  =  os.path.basename(trr).split('.')[0]
+	outname = filename+'.xtc'
+	cmd = f"echo 0 | gmx trjconv -f {trr} -s {gro_name} -o {outname}"
+	print(cmd)
+	os.system(cmd)
+
+# make a dir and merge xtc files
+cmd = f"mkdir xtc && cd xtc && mv ../*.xtc . && gmx trjcat -f ./*.xtc -o merged.xtc && mv merged.xtc ../"
+print(cmd)
+os.system(cmd)
+
+#get info from gro and top files for trjconv
+cmd = f"gmx grompp -f {mdp_name} -c {gro_name} -p {top_name} -o sys.tpr"
+print(cmd)
+os.system(cmd)
+
+# remove pbc, rot and trans
+cmd = f'echo 1 0|gmx trjconv -f merged.xtc -s sys.tpr -pbc nojump -center -o nojump.xtc'
+print(cmd)
+os.system(cmd)
+cmd = f'echo 1 1 0|gmx trjconv -f nojump.xtc -s sys.tpr -center -o nojump_rottrans.xtc -fit rot+trans'
+print(cmd)
+os.system(cmd)
+
+cmd = f"cp nojump_rottrans.xtc {start}_{end}_out.xtc"
+os.system(cmd)
+
+cmd = f"rm -rv *sys* MHPC* nojump* merged* coor_nc xtc mdout.mdp"
+os.system(cmd)
