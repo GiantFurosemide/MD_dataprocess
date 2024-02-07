@@ -4,10 +4,12 @@
 # input files
 parm_file="charmm2amber.parm7"
 rst7_file="amber.rst7"
+# output files
 coor_all="merge.nc"
 vel_all="velocity.nc"
-# output files
-out_trr="merge_amber.trr"
+out_trr="merge_amber.nc"
+# then run 
+
 
 ############################################################################################################
 # 加载Amber模块 
@@ -17,7 +19,7 @@ cat > cpptraj000.in <<EOF
 parm $parm_file
 reference $rst7_file
 trajin coor_nc/*.nc
-trajout ${vel_all}
+trajout ${coor_all}
 run
 quit
 EOF
