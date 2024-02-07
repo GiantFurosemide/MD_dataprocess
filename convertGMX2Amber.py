@@ -13,5 +13,12 @@ gmx_top.save('npt_ab.prmtop', format='amber')
 #gmx_top.save('pmaa.top', format='amber')
 #gmx_top.save('pmaa.crd', format='rst7')
 
+# 加载 Amber 格式的文件
+amber = pmd.load_file('myparm.parm7', 'mytraj.rst7')
+
+# 保存为 Gromacs 格式的文件
+amber.save('output.gro', overwrite=True)
+amber.save('output.top', format='gromacs', overwrite=True)
+
 
 
