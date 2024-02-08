@@ -1,20 +1,30 @@
 import glob
 import os
-os.system("mkdir coor_nc")
-start, end = 0, 30
-for i in range(start, end):
+
+import argparse
+import pathlib
+parser = argparse.ArgumentParser(description='''
+								 copy this file to workdir
+								 example:  python trr2xtc.py --start 2 --end 30 --gro gro --top top --mdp eq   
+								 '''                    
+								 )
+parser.add_argument("--start", help = "start file number, optional", type = int)
+parser.add_argument("--end", help = "end file number, optional", type = int)
+parser.add_argument('--gro', help = 'gro file path', type = pathlib.Path)
+parser.add_argument('--top', help = 'top file path', type = pathlib.Path)
+parser.add_argument('--mdp', help = 'mdp file path', type = pathlib.Path)
+
+args = parser.parse_args()
+start, end = max(0,args.start), min(args.end, 1e10)
+gro_name, top_name, mdp_name= args.gro, args.top, args.mdp
+
+trr_files = []
+for i in range(int(start), int(end)+1):
 	if os.path.exists("./" + str(i)):
 		print(i)
-		cmd = f"cp {i}/*.trr coor_nc"
-		os.system(cmd)
+		trr_files += glob.glob(str(i) + '/*.trr')
 
-
-trr_files = glob.glob('coor_nc/*.trr')
 print(trr_files)
-
-gro_name= "./asyn-WT-box.gro"
-top_name="./asyn-WT.top"
-mdp_name="./eq.mdp"
 # convert trr to xtc for each trj
 for trr in trr_files:
 	filename  =  os.path.basename(trr).split('.')[0]
@@ -24,7 +34,7 @@ for trr in trr_files:
 	os.system(cmd)
 
 # make a dir and merge xtc files
-cmd = f"mkdir xtc && cd xtc && mv ../*.xtc . && gmx trjcat -f ./*.xtc -o merged.xtc && mv merged.xtc ../"
+cmd = f"mkdir xtc && cd xtc && mv ../MHPC*.xtc . && gmx trjcat -f ./*.xtc -o merged.xtc && mv merged.xtc ../"
 print(cmd)
 os.system(cmd)
 
@@ -44,5 +54,5 @@ os.system(cmd)
 cmd = f"cp nojump_rottrans.xtc {start}_{end}_out.xtc"
 os.system(cmd)
 
-cmd = f"rm -rv *sys* MHPC* nojump* merged* coor_nc xtc mdout.mdp"
+cmd = f"rm -rv nojump* merged* xtc mdout.mdp"
 os.system(cmd)
