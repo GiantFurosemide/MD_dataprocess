@@ -3,7 +3,12 @@
 ##########################################################################################
 cp -v npt_ab.gro step4.1_equilibration.gro
 cp -v step6.6_equilibration.gro step4.1_equilibration.gro
-echo 1 q|gmx make_ndx -f step4.1_equilibration.gro -o index_sel.ndx
+
+gmx make_ndx -f step4.1_equilibration.gro -o index_sel.ndx << EOF
+1
+q
+EOF
+
 echo 1 | gmx trjconv -f step4.1_equilibration.gro -s  step4.1_equilibration.gro -o npt_ab_protein.gro 
 MIDDLE_LINE_NUMBER=$(($(cat npt_ab_protein.gro | wc -l)/2))
 

@@ -56,6 +56,14 @@ Read log files in directory 'log_txt', plot temperature/pressure/kinetic/potenti
 3. input initial gro file
 4. input atom index for PBC treatment and centering.
 
+use in customized mode:
+
+specify updated value in md_process_config.sh
+
+```bash
+./md_process_custom.sh -f md_process_config.sh
+```
+
 ## TODO
 
 * update automatic center atom selection, for example by centroid.
