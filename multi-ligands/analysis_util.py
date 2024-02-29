@@ -1,3 +1,14 @@
+"""
+General MD analysis functions based on MDAnalysis.
+
+analysis and plot:
+    RMSD
+    RMSF
+    Radius of gyration
+
+"""
+
+
 import MDAnalysis as mda
 from MDAnalysis.analysis import rms
 import numpy as np
