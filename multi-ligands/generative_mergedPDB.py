@@ -1,239 +1,249 @@
 """
-B_structure（蛋白，一个） 将会放在盒子中心
-A_structure（小分子，多个）将会在盒子内随机放置并且不会和B_structure在5埃内重叠，
-        且A_structure的多个小分子之间不会在2.5埃内重叠
-
+One atom group (B_structure, ex. protein or a protein with several ligand) will be placed at the center of the box. 
+another atom group (A_structure, ex. small molecules or another protein) will be randomly placed inside the box,
+without overlapping with B_structure within 5 angstroms(default), 
+and the multiple small molecules of A_structure will not overlap within 3.5 angstroms(default).
 """
 
 import MDAnalysis as mda
 import numpy as np
 from scipy.spatial.distance import cdist
-import copy
+import os
 
 
-# step 0: set output path
-#ligan_pdb="/Users/muwang/Documents/work/project/20230713_Haemoglobin_Art_jkw/data/structure/2dn1/OXY.pdb"
-#ligand_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/PP1-acedrg.pdb"
-#ligand_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/dasatinib-acedrg.pdb"
-ligand_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/ligand-smile/DAS.acpype/DAS_NEW.pdb"
-#ligand_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/ligand-smile/PP1.acpype/PP1_NEW.pdb"
+def update_thresholds_by_ligand(ligand_coord, threshold1, threshold2):
+    distance = cdist(ligand_coord, ligand_coord)
+    max_distance = np.max(distance)
+    assert max_distance >= 0
+    return threshold1 + max_distance, threshold2 + max_distance
 
-#input_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/structures/clean-minimized-alignto2DN2/1RQA-clean-minimized_align.pdb'
-#output_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/jupyter/output/structure_add_OXY/1RQA.pdb'
-#input_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/structures/clean-minimized-alignto2DN2/1Y7D-clean-minimized_align.pdb'
-#output_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/jupyter/output/structure_add_OXY/1Y7D.pdb'
-#input_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/structures/clean-minimized-alignto2DN2/1Y7G-clean-minimized_align.pdb'
-#output_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/jupyter/output/structure_add_OXY/1Y7G.pdb'
-#input_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/structures/clean-minimized-alignto2DN2/3NMM-clean-minimized_align.pdb'
-#output_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/jupyter/output/structure_add_OXY/3NMM.pdb'
-#input_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/structures/hemoglobin/非携氧态T/2dn2_clean_prepared_1.pdb'
-#output_pdb = '/Users/muwang/Documents/work/project/20240117_Haemoglobin_Art_jkw/project/20240129_mutation/jupyter/output/structure_add_OXY/2dn2.pdb'
-
-#input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res309-533.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-10w.pdb"
-#input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res309-533.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-dasatinib-10w.pdb"
-#input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res309-533.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-acpype-10w.pdb"
-#input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res309-533.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-acpype-10w.pdb"
-#input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res309-533.pdb"
-input_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-100-acpype-100w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-200-acpype-100w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-2-acpype-10w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-4-acpype-10w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-3-acpype-10w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-3-10w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-2-10w.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-2-10w-new.pdb"
-output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-PP1-3-10w-new.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-3-10w-new.pdb"
-#output_pdb="/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/for_md_build/src-DAS-2-10w-new.pdb"
-# Step 1: Load A.pdb and B.pdb
-A_structure = mda.Universe(ligand_pdb)
-B_structure = mda.Universe(input_pdb)
-
-# Step 2: Define the box dimensions
-box_size = 100  # Angstroms
-
-# Step 3: Randomly position the 10 A proteins
-num_A_proteins = 3  #936 94 10 20 50 (4 for PP1;10 for dasatinib)
-box_center = np.array([box_size / 2, box_size / 2, box_size / 2])
-THRESHOLD1 = 5.0
-THRESHOLD2 = 3.5
-
-
-## 检查两个坐标集是否重叠的函数
-#def check_overlap(coords1, coords2,threshold=5):
-#    """
-#    coords1: AtomsGroup
-#    coords2: Atom
-#    
-#    """
-#    min_dists = []
-#    for i in range(len(coords1)):
-#        diff = coords1[i] - coords2 
-#        dists = np.linalg.norm(diff, axis=1)
-#        min_dists.append(np.min(dists))
-#    return min(min_dists) < threshold # threshold default 5 Angstrom
-
-
-#def check_overlap(listA, listB,threshold=5):
-#    # 将listA和listB中的numpy arrays合并为单个数组，以便使用cdist计算距离
-#    arrayA = np.vstack(listA)
-#    arrayB = np.vstack(listB)
-#
-#    # 计算所有listA中的坐标到所有listB中的坐标的距离矩阵
-#    distances = cdist(arrayA, arrayB)
-#
-#    # 检查是否所有距离均大于5
-#    all_distances_greater_than_threshold = np.all(distances > threshold)
-#
-#    return all_distances_greater_than_threshold
-#
-#def get_coordinates_with_distances_greater_than_threshold(listA, listB,threshold=5):
-#    # 将listA和listB中的numpy arrays合并为单个数组，以便使用cdist计算距离
-#    arrayA = np.vstack(listA)
-#    arrayB = np.vstack(listB)
-#
-#    # 计算所有listA中的坐标到所有listB中的坐标的距离矩阵
-#    distances = cdist(arrayA, arrayB)
-#
-#    # 找到距离大于5的坐标索引
-#    indices = np.where(np.all(distances > threshold, axis=1))
-#
-#    # 获取距离大于5的坐标
-#    coordinates_with_distances_greater_than_threshold = arrayA[indices]
-#
-#    return coordinates_with_distances_greater_than_threshold
 
 def get_coordinates_with_distances_greater_than_threshold(listA, listB, threshold):
+    """
+    get coordinates in array A with the distances ( with array B ) greater than threshold
+
+    :param listA:
+    :param listB:
+    :param threshold:
+    :return: list of coordinates in array A with the distances ( with array B ) greater than threshold
+    """
     # 将listA和listB中的numpy arrays合并为单个数组，以便使用cdist计算距离
     arrayA = np.vstack(listA)
     arrayB = np.vstack(listB)
 
     # 计算所有listA中的坐标到所有listB中的坐标的距离矩阵
     distances = cdist(arrayA, arrayB)
-    min_ = min(distances.flatten())
-    max_ = max(distances.flatten())
+
     # 找到距离大于阈值的坐标索引
     indices = np.where(np.all(distances > threshold, axis=1))
-    #indices = np.where(np.any(distances < threshold, axis=1))
 
-    #indices = np.where(distances < threshold)
+    assert np.min(distances[
+                      indices]) > threshold, f"error in get_coordinates_with_distances_greater_than_threshold, min distance should be greater than threshold '{threshold}', but got {np.min(distances[indices])}"
+
     # 获取距离大于阈值的坐标
     coordinates_with_distances_greater_than_threshold = arrayA[indices]
-     
-
     return coordinates_with_distances_greater_than_threshold
+
 
 def generate_random_coordinates(num_coordinates):
     # 生成num_coordinates个随机坐标，范围在[0, 1)
-    return (np.random.rand(num_coordinates, 3)-0.5)*box_size
+    return (np.random.rand(num_coordinates, 3) - 0.5) * box_size
 
-def process_lists(listC, listB, threshold1=5.0,threshold2=2.0):
+
+def process_lists(listC, listB, threshold1=5.0, threshold2=3.5):
+    """
+
+    :param listC: randomized coordinates of the geometric center of A ligands
+    :param listB: coordinates of all atoms of B protein
+    :param threshold1: the minimum distance between ligand（listC）and protein（listB）
+    :param threshold2: the minimum distance between ligands in listC
+    :return: filtered randomized coordinates of the geometric center of A ligands
+    """
+
     listD = get_coordinates_with_distances_greater_than_threshold(listC, listB, threshold1)
     while len(listC) > len(listD):
-
-        
         # 生成需要补充的随机坐标个数
         num_random_coordinates = len(listC) - len(listD)
-        # 生成随机坐标并添加到listC中
+        # 生成随机坐标
         listE = generate_random_coordinates(num_random_coordinates)
-        #listC = np.vstack((listC, listE))
 
         # 用listC中的坐标与listB进行新一轮的距离比较
         listF = get_coordinates_with_distances_greater_than_threshold(listE, listB, threshold1)
-
+        if len(listF) == 0:
+            print(f"should generate new random coordinates, because no coordinates in listF, listE = {listE}")
+            continue
         # 用listF中的坐标与listD进行新一轮的距离比较，得到合并后的新listD
         listG = get_coordinates_with_distances_greater_than_threshold(listF, listD, threshold2)
+        if len(listG) == 0:
+            print(f"should generate new random coordinates, because no coordinates in listG, listF = {listF}")
+            continue
         listD = np.vstack((listD, listG))
 
         print(f"len listD = {len(listD)}")
 
     return listD
 
-# Step 4: Place the B protein at the center
-B_protein_coords = B_structure.atoms.positions
-B_centered_coords = B_protein_coords - np.mean(B_protein_coords, axis=0) + box_center
 
-# 随机生成10组蛋白质A的坐标
-#A_positions = []
-#for i in range(num_A_proteins):
-#    overlaps = True
-#    print(f'{len(A_positions)}')
-#    while overlaps:
-#    # Generate random positions for each A protein
-#        random_position = (np.random.rand(3)-0.5) * box_size
-#        # random_position 不可以与 B_centered_coords在5埃内重叠
-#        overlaps = check_overlap([random_position], B_protein_coords,threshold=5)
-#        # random_position 不可以与 A_positions的小分子在2.5埃内重叠
-#        if A_positions:
-#            #print(A_positions)
-#            #assert overlaps == False
-#            assert any([check_overlap([random_position],[s],threshold=2.5) for s in A_positions])
-#            
-#        overlaps = not (not overlaps and not any([check_overlap(random_position,s,threshold=2.5) for s in A_positions]))            
-#    A_positions.append(random_position)
-A_positions = (np.random.rand(num_A_proteins,3)-0.5) * box_size
-A_positions = process_lists(A_positions,B_centered_coords,threshold1=THRESHOLD1,threshold2=THRESHOLD2)
+def translate_atoms(atom_coords, translation_vector):
+    """
+    Translate atomic coordinates by a translation vector.
 
-assert len(get_coordinates_with_distances_greater_than_threshold(A_positions, B_centered_coords, threshold=THRESHOLD1))==len(A_positions)
+    Args:
+    atom_coords (numpy.ndarray): Array of shape (N, 3) representing atomic coordinates.
+    translation_vector (numpy.ndarray): 1D array representing the translation vector.
 
-A_protein_coords = A_structure.atoms.positions
-A_centered_coords = A_protein_coords - np.mean(A_protein_coords, axis=0) + box_center
-A_structure.atoms.positions = A_centered_coords
+    Returns:
+    numpy.ndarray: Translated atomic coordinates.
 
-# Step 5: Create the combined structure (C.pdb)
-num_A_atoms = A_structure.atoms.positions.shape[0]
-num_B_atoms = B_structure.atoms.positions.shape[0]
-total_num_atoms = num_A_atoms * num_A_proteins + num_B_atoms
+    Example usage:
+     atom_coords = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+     translation_vector = np.array([1, 1, 1])
 
-# Create an empty array to hold the positions of all atoms in C.pdb
-C_positions = np.zeros((total_num_atoms, 3))
+     translated_coords = translate_atoms(atom_coords, translation_vector)
 
-# Assign positions for A proteins
-for i, position in enumerate(A_positions):
-    C_positions[i * num_A_atoms: (i + 1) * num_A_atoms, :] = A_structure.atoms.positions + position
+     print("Translated coordinates:")
+     print(translated_coords)
 
-# Assign positions for B protein
-C_positions[num_A_atoms * num_A_proteins:] = B_centered_coords
-
-# Create the combined structure (C.pdb)
-entities = []
-#ini_id = A_structure.atoms.residues.resids[0]
-for i in range(num_A_proteins):
-    u_copy = A_structure.copy()
-    u_copy.segments.segids = f'APP'
-    temp_atom_group = u_copy.atoms
-    #print(temp_atom_group.residues.resids)
-    #print('aaaa')
-    #temp_atom_group.residues.resids = ini_id + i
-    temp_atom_group.residues.resids += i
-
-    #print(temp_atom_group.residues.resids)
-    #print('>>')
-    
-    #print(temp_atom_group.residues.resids)
-    
-    entities.append(temp_atom_group)
-    del temp_atom_group
-
-for i in entities:
-    #ini_id += 1
-    #i.residues.resids = ini_id
-    print(i.segments.segids)
-    
-entities += [B_structure.atoms]
+    """
+    translated_coords = atom_coords + translation_vector
+    return translated_coords
 
 
+def rotate_atoms(atom_coords, euler_angles):
+    """
+    Rotate atomic coordinates by Euler angles.
 
-C_structure = mda.Merge(*entities)
-print(C_positions.shape)
-C_structure.atoms.positions = C_positions
+    Args:
+    atom_coords (numpy.ndarray): Array of shape (N, 3) representing atomic coordinates.
+    euler_angles (numpy.ndarray): Array of shape (3,) representing Euler angles in radians.
 
-# Save the combined structure to C.pdb
-C_structure.atoms.write(output_pdb)
-print('done')
+    Returns:
+    numpy.ndarray: Rotated atomic coordinates.
 
+    Example usage:
+     atom_coords = np.array([[1, 2, 3], [4, 5, 6], [7, 8, 9]])
+     euler_angles = np.array([np.pi/4, np.pi/3, np.pi/6])
+
+     rotated_coords = rotate_atoms(atom_coords, euler_angles)
+
+     print("\nRotated coordinates:")
+     print(rotated_coords)
+    """
+    # Construct rotation matrix from Euler angles
+    alpha, beta, gamma = euler_angles
+    R_x = np.array([[1, 0, 0],
+                    [0, np.cos(alpha), -np.sin(alpha)],
+                    [0, np.sin(alpha), np.cos(alpha)]])
+    R_y = np.array([[np.cos(beta), 0, np.sin(beta)],
+                    [0, 1, 0],
+                    [-np.sin(beta), 0, np.cos(beta)]])
+    R_z = np.array([[np.cos(gamma), -np.sin(gamma), 0],
+                    [np.sin(gamma), np.cos(gamma), 0],
+                    [0, 0, 1]])
+
+    # Combined rotation matrix
+    R = np.dot(R_z, np.dot(R_y, R_x))
+
+    # Rotate atomic coordinates
+    rotated_coords = np.dot(atom_coords, R.T)
+    return rotated_coords
+
+
+def main(config_dict):
+
+    # step 0: set output path
+
+    ligand_pdb = config_dict["ligand_pdb"]
+    input_pdb = config_dict["input_pdb"]
+    output_pdb = config_dict["output_pdb"]
+
+    # Step 1: Load A.pdb and B.pdb
+    A_structure = mda.Universe(ligand_pdb)
+    B_structure = mda.Universe(input_pdb)
+
+    # Step 2: Define the box dimensions
+    box_size = config_dict["box_size"]  # Angstroms
+
+    # Step 3: Randomly position the 10 A proteins
+    num_A_proteins = config_dict["num_A_proteins"]  # 936 94 10 20 50 (4 for PP1;10 for dasatinib)
+    assert num_A_proteins > 0, "num_A_proteins should be greater than 0"
+    THRESHOLD1 = config_dict["THRESHOLD1"]
+    THRESHOLD2 = config_dict["THRESHOLD2"]
+
+    THRESHOLD1, THRESHOLD2 = update_thresholds_by_ligand(A_structure.atoms.positions, THRESHOLD1, THRESHOLD2)
+    print(f"threshold1, threshold2={THRESHOLD1}, {THRESHOLD2}")
+
+    # Step 4: Place the B protein at the center
+    B_protein_coords = B_structure.atoms.positions
+    B_centered_coords = B_protein_coords - np.mean(B_protein_coords, axis=0)
+
+    # Place the Geometric center of A proteins randomly
+    A_positions = (np.random.rand(num_A_proteins, 3) - 0.5) * box_size
+    A_positions = process_lists(A_positions, B_centered_coords, threshold1=THRESHOLD1, threshold2=THRESHOLD2)
+
+    assert len(get_coordinates_with_distances_greater_than_threshold(A_positions, B_centered_coords,threshold=THRESHOLD1)) == len(A_positions)
+    # center the ligand (A protein) at the origin (0, 0, 0
+    A_protein_coords = A_structure.atoms.positions
+    A_centered_coords = A_protein_coords - np.mean(A_protein_coords, axis=0)
+    A_structure.atoms.positions = A_centered_coords
+
+    # Step 5: Create the combined structure (C.pdb)
+    num_A_atoms = A_structure.atoms.positions.shape[0]
+    num_B_atoms = B_structure.atoms.positions.shape[0]
+    total_num_atoms = num_A_atoms * num_A_proteins + num_B_atoms
+
+    # Create an empty array to hold the positions of all atoms in C.pdb
+    C_positions = np.zeros((total_num_atoms, 3))
+
+    # Assign positions for A structure (ligand)
+    for i, position in enumerate(A_positions):
+        # initialize the eular angles
+        # alpha, beta, gamma: alpha,gamma: 0-2pi; beta: 0-pi
+        eular_angles = np.hstack(
+            [np.random.rand(1) * 2 * np.pi, np.random.rand(1) * np.pi, np.random.rand(1) * 2 * np.pi])
+        C_positions[i * num_A_atoms: (i + 1) * num_A_atoms, :] = rotate_atoms(
+            A_structure.atoms.positions + position, eular_angles)
+
+    # Assign positions for B structure (protein)
+    C_positions[num_A_atoms * num_A_proteins:] = B_centered_coords
+
+    # Create the combined structure (C.pdb)
+    entities = []
+    for i in range(num_A_proteins):
+        u_copy = A_structure.copy()
+        u_copy.segments.segids = f'APP'
+        temp_atom_group = u_copy.atoms
+        temp_atom_group.residues.resids += i
+        entities.append(temp_atom_group)
+        del temp_atom_group
+
+    for i in entities:
+        print(i.segments.segids)
+
+    entities += [B_structure.atoms]
+
+    C_structure = mda.Merge(*entities)
+    print(C_positions.shape)
+    C_structure.atoms.positions = C_positions
+
+    # step 6: Save the combined structure to C.pdb
+    C_structure.atoms.write(output_pdb)
+    print(f"done! output_pdb:\n > {output_pdb}")
+    print(f"visualize the output_pdb by pymol & VMD:\n > pymol {output_pdb} \n > vmd {output_pdb}")
+
+
+if __name__ == '__main__':
+
+    config_dict = {
+        "ligand_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/ligand-smile/DAS.acpype/DAS_NEW.pdb",
+        "input_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533.pdb", # protein
+        "output_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533-10w.pdb",
+        "num_A_proteins": 3000,
+        "box_size": 5000,
+        "THRESHOLD1": 5.0,
+        "THRESHOLD2": 3.5,
+    }
+
+    main(config_dict)
+
+    # os.system(f"pymol {output_pdb}")

@@ -6,3 +6,6 @@ post_process.sh
 runme.sh
 select_gmx.sh
 trr2xtc_split.py
+.ipynb_checkpoints
+*.ipynb
+*.pdb
