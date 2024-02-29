@@ -1,6 +1,6 @@
 !/bin/bash
 #Author: Mu Wang 20230202 based on protocolgromacs
-#Version: 1.
+#Version: 1.0
 
 # INPUT:
 # copy ${ligand}_GMX.itp ${ligand}_NEW.pdb (from acpype) here 
