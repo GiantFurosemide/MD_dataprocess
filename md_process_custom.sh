@@ -58,6 +58,7 @@ while [[ $# -gt 0 ]]; do
         shift # past argument
         ;;
         *)    # unknown option
+        # print 
         shift # past argument
         ;;
     esac
@@ -70,8 +71,6 @@ echo -e "2. convert .trr to xtc and merge to one xtc \n> $TRR2XTC_MERGE"
 echo -e "3. PBC process and align to reference \n> $PBC_PROCESS_ROT_TRANS"
 echo -e "4. draw plots based on log files from 512 \n> $DRAW_LOG_PLOTS"
 echo -e "5. vmd visualized with vmd script useme.tcl \n> $VMD_VISUAL"
-
-
 
 
 #read -p "Press any key to continue... " -n1 -s 
