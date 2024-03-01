@@ -9,3 +9,4 @@ trr2xtc_split.py
 .ipynb_checkpoints
 *.ipynb
 *.pdb
+ligand_info
