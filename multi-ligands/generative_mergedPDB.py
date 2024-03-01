@@ -45,12 +45,12 @@ def get_coordinates_with_distances_greater_than_threshold(listA, listB, threshol
     return coordinates_with_distances_greater_than_threshold
 
 
-def generate_random_coordinates(num_coordinates):
+def generate_random_coordinates(num_coordinates, box_size=10.0): # box_size in ns
     # 生成num_coordinates个随机坐标，范围在[0, 1)
     return (np.random.rand(num_coordinates, 3) - 0.5) * box_size
 
 
-def process_lists(listC, listB, threshold1=5.0, threshold2=3.5):
+def process_lists(listC, listB, threshold1=5.0, threshold2=3.5, box_size=10.0):
     """
 
     :param listC: randomized coordinates of the geometric center of A ligands
@@ -65,7 +65,7 @@ def process_lists(listC, listB, threshold1=5.0, threshold2=3.5):
         # 生成需要补充的随机坐标个数
         num_random_coordinates = len(listC) - len(listD)
         # 生成随机坐标
-        listE = generate_random_coordinates(num_random_coordinates)
+        listE = generate_random_coordinates(num_random_coordinates, box_size)
 
         # 用listC中的坐标与listB进行新一轮的距离比较
         listF = get_coordinates_with_distances_greater_than_threshold(listE, listB, threshold1)
@@ -179,10 +179,10 @@ def main(config_dict):
 
     # Place the Geometric center of A proteins randomly
     A_positions = (np.random.rand(num_A_proteins, 3) - 0.5) * box_size
-    A_positions = process_lists(A_positions, B_centered_coords, threshold1=THRESHOLD1, threshold2=THRESHOLD2)
+    A_positions = process_lists(A_positions, B_centered_coords, threshold1=THRESHOLD1, threshold2=THRESHOLD2,box_size=box_size)
 
     assert len(get_coordinates_with_distances_greater_than_threshold(A_positions, B_centered_coords,threshold=THRESHOLD1)) == len(A_positions)
-    # center the ligand (A protein) at the origin (0, 0, 0
+    # center the ligand (A protein) at the origin (0, 0, 0)
     A_protein_coords = A_structure.atoms.positions
     A_centered_coords = A_protein_coords - np.mean(A_protein_coords, axis=0)
     A_structure.atoms.positions = A_centered_coords
