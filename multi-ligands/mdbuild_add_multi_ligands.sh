@@ -185,8 +185,10 @@ echo "SOL" | $GMX genion -s ions.tpr -o $PDB"_solv_ions.gro" -p topol.top -pname
 
 #-------- MINIMIZATION / EQUILIBRUIM / PRODUCTION / ANALYSIS -------
 # for replicas
+replica_work_dir=$PWD
 for ((i=0; i<$NUMBEROFREPLICAS; i++))
 	do 
+	cd $replica_work_dir
 	echo ">>>>> replica_"$((i+1))
 	mkdir "replica_"$((i+1))
 	cd "replica_"$((i+1))
