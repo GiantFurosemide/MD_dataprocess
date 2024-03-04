@@ -14,17 +14,23 @@ A script to build md system and complete minimization/equilibruim/production/ana
 
 Update gromacs\md system\HPC parameters in this script before building.
 
+## mdbuild_add_one_ligand.sh
+
+Previous version for one ligand MD system building.
+
 # Usage
 
 ```bash
 # usage for md system building 
 
-# update ligand information in ligand_info_prepare.py,
+# 1. update ligand information in ligand_info_prepare.py,
 # then generate ligand info related scripts for mdbuild_add_multi_ligands.sh
 python ligand_info_prepare.py
 
-# the script to build md system and complete minimization/equilibruim/production/analysis  
+# 2. update MD simulation parameters in mdbuild_add_multi_ligands.sh
+# the script will build md system and complete minimization/equilibruim/production/analysis  
 source mdbuild_add_multi_ligands.sh
+
 ```
 
 
