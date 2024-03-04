@@ -1,4 +1,4 @@
-# Scripts Instruction
+# Scripts Introduction
 
 ## ligand_info _prepare.py
 
@@ -10,7 +10,7 @@ ligand_config.sh, generate_pure_protein_pdb.sh and ligand_info/ will be called b
 
 ## mdbuild_add_multi_ligands.sh
 
-A script to build md system and complete minimization/equilibruim/production/analysis.
+A script to build MD system and complete minimization/equilibrium/production/analysis.
 
 Update gromacs\md system\HPC parameters in this script before building.
 
