@@ -55,16 +55,18 @@ def generate_ligand_config_sh(lig_path_list,out_name='./ligand_config.sh'):
 def extract_ligand_letter(lig_info_list:list)->list:
     lig_letter_list = []
     for lig_info_dict in lig_info_list:
-        lig_info_list.append(lig_info_dict['LIGAND_LETTER'])
+        lig_letter_list.append(lig_info_dict['LIGAND_LETTER'])
     assert len(lig_letter_list) == len(lig_info_list)
     return lig_letter_list
 
-def generate_pure_protein_pdb_sh(ligand_letter_list,out_file='./genertate_pure_protein_pdb.sh'):
+def generate_pure_protein_pdb_sh(ligand_letter_list,out_file='./generate_pure_protein_pdb.sh'):
     cmd = """
 
 for my_ligname_letter in ${LIGAND_LETTER_LIST[@]};
 do 
-    grep -v $my_ligname_letter receptor_tmp.pdb > receptor_tmp.pdb
+    grep -v $my_ligname_letter receptor_tmp.pdb > receptor_tmp2.pdb
+    rm -rfv receptor_tmp.pdb
+    mv receptor_tmp2.pdb receptor_tmp.pdb
 done;
 mv receptor_tmp.pdb receptor.pdb    
     
@@ -90,20 +92,9 @@ if __name__ == "__main__":
         'LIGNAME':"FTY",
         'LIGAND_LETTER':"UNL",
         'LIGAND_LETTER_OUT':"UNL",
-        'LIG_NUMBER':1,
+        'LIG_NUMBER':2,
     },
-    {
-        'LIGNAME':"DAS",
-        'LIGAND_LETTER':"UNL",
-        'LIGAND_LETTER_OUT':"UNL",
-        'LIG_NUMBER':1,
-    },
-    {
-        'LIGNAME':"PP1",
-        'LIGAND_LETTER':"LIG",
-        'LIGAND_LETTER_OUT':"LIG",
-        'LIG_NUMBER':1,
-    }
+
     ]
 # generate ligand_info 
     output_dir = "./ligand_info"
@@ -114,7 +105,7 @@ if __name__ == "__main__":
     generate_ligand_config_sh(ligand_info_path_list,out_name=out_name)
 
 # generate generate_pure_protein_pdb.sh
-    out_name='./genertate_pure_protein_pdb.sh'
+    out_name='./generate_pure_protein_pdb.sh'
     lig_letter_list = extract_ligand_letter(ligand_info_list)
     generate_pure_protein_pdb_sh(lig_letter_list,out_file=out_name)
 

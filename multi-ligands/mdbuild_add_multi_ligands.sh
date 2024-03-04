@@ -26,13 +26,13 @@ LIGAND_LETTER_OUT=$LIGAND_LETTER # 3-letter name in out pdb file form ligand ext
 LIG_NUMBER=1
 
 #---------  SIMU SETUP  -----------
-BOXSIZE=6.0 #cubic simulation boxsiwe
+BOXSIZE=10.0 #cubic simulation boxsiwe
 BOXTYPE=cubic #Box type
 NT=36 #Number of core.
 WATER=tip3p #Water type
-NUMBEROFREPLICAS=2 #Number of replica
+NUMBEROFREPLICAS=3 #Number of replica
 FF=amber99sb-ildn #Force field
-SIMULATIONTIME=3000 #Simulation time in nanosec. Will be converted in fs and modified in the mdp file.
+SIMULATIONTIME='' #Simulation time in nanosec. Will be converted in fs and modified in the mdp file.
 					#If you do not need production, keep SIMULATIONTIME empty.
 NACL_CONC=0.15
 #  edit temperature directly in mdp file for equilibrium and production
@@ -53,10 +53,11 @@ MDRUN_GPU="$GMX mdrun $GPU1"
 # make a directory 'param' for toppology files generation
 mkdir param
 cp $FILE".pdb" param/
+cp generate_pure_protein_pdb.sh param/
 cd param
 # extract protein from pdb file
 # just because mdanalysis ligand dose not begin with HETOM, with ATOM instead
-grep 'ATOM ' "${FILE}.pdb" --color=none > receptor2.pdb
+grep 'ATOM ' "${FILE}.pdb" --color=none > receptor_tmp.pdb
 
 #grep -v $LIGAND_LETTER receptor2.pdb > receptor.pdb
 #rm -rfv receptor2.pdb
@@ -121,7 +122,7 @@ cp receptor_GMX.pdb complex.pdb
 
 function update_ligand_info(){
 	local ligand_info_bash=${1}
-	source ligand_info_bash 
+	source $ligand_info_bash 
 }
 
 function prepare_complex_pdb(){
@@ -155,7 +156,9 @@ echo "
 # therefore compatible with ligand_GMX.itp
 grep "$LIGAND_LETTER" myprotein.pdb > all-ligand.pdb
 #grep -h ATOM receptor_GMX.pdb all-ligand.pdb > complex.pdb
-grep -h ATOM complex.pdb all-ligand.pdb > complex.pdb
+grep -h ATOM complex.pdb all-ligand.pdb > complex2.pdb
+rm -rfv complex.pdb 
+mv complex2.pdb complex.pdb 
 
 }
 
@@ -182,8 +185,10 @@ echo "SOL" | $GMX genion -s ions.tpr -o $PDB"_solv_ions.gro" -p topol.top -pname
 
 #-------- MINIMIZATION / EQUILIBRUIM / PRODUCTION / ANALYSIS -------
 # for replicas
+replica_work_dir=$PWD
 for ((i=0; i<$NUMBEROFREPLICAS; i++))
 	do 
+	cd $replica_work_dir
 	echo ">>>>> replica_"$((i+1))
 	mkdir "replica_"$((i+1))
 	cd "replica_"$((i+1))
