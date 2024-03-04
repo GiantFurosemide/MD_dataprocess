@@ -349,4 +349,8 @@ EOF
 	cd ../
 fi
 done
+
+# packing up results
+source packup.sh
+
 conda deactivate
