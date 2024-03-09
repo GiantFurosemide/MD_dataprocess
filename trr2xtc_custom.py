@@ -6,9 +6,13 @@ def run_cmd(cmd:str):
 	os.system(cmd)
 
 trr_files = glob.glob('./*.trr')
-gro_name= '../../md-input/npt_ab.gro' 
-cmd=f"cp -v {gro_name} ../step4.1_equilibration.gro" # prepare gro file for next step
-run_cmd(cmd)
+
+for gro_file in glob.glob('../../md-input/*.gro'):
+	#gro_name= '../../md-input/npt_ab.gro' 
+	cmd=f"cp -v {gro_file} ../step4.1_equilibration.gro" # prepare gro file for next step
+	run_cmd(cmd)
+gro_name='../step4.1_equilibration.gro'
+
 
 for trr in trr_files:
 	filename  =  os.path.basename(trr).split('.')[0]
