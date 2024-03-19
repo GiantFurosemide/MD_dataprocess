@@ -2,10 +2,11 @@
 #Author: Mu Wang 20230202 based on protocolgromacs
 #Version: 1.0
 
+# this script is only for One ligand
 # INPUT:
 # ${ligand}_GMX.itp 
 # ${ligand}_NEW.pdb   # copy ${ligand}_GMX.itp ${ligand}_NEW.pdb (from acpype) here 
-# complex.pdb         # copy receptor + ligand.pdb  here and copy to myprotein.pdb
+# complex.pdb         # copy receptor + ligand.pdb  here and copy to myprotein.pdb, you should make sure ligand contains H
 # mdp/                # a directory with mdp files for minimization\equilibruim\production base on protocolgromacs
 # (this script)
 
@@ -23,6 +24,7 @@ FILE="myprotein" #<<<<<<<<<<<<<<<<<<<<<<<<< PUT THE PDB NAME HERE (without the e
 LIGNAME="FTY" #<<<<<<<<<<<<<<<<<<<<<<  #PUT LIGAND NAME HERE, leave it blank if no ligand.
 LIGAND_LETTER='UNL' # 3-letter name in PDB files
 LIGAND_LETTER_OUT=$LIGAND_LETTER # 3-letter name in out pdb file form ligand extraction of original PDB file for topology buildin by acpype  
+								 # Should be same asLIGAND_LETTER in ligand_NEW.pdb
 LIG_NUMBER=1
 
 #---------  SIMU SETUP  -----------
@@ -143,7 +145,8 @@ echo "
 # extract coordination of ligands from original pdb file, then merge receptor and ligand to complex.pdb 
 # for "swimming" system, ligands coodination is from acpype (ligand_NEW.pdb)
 # therefore compatible with ligand_GMX.itp
-grep "$LIGAND_LETTER" myprotein.pdb > all-ligand.pdb
+grep "$LIGAND_LETTER" myprotein.pdb > all-ligand.pdb  # you should make sure all-ligand.pdb contains H
+# sed -i 's/HETATM/ATOM  /g' all-ligand.pdb
 grep -h ATOM receptor_GMX.pdb all-ligand.pdb > complex.pdb
 
 ######################
