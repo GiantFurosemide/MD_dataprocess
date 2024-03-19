@@ -348,8 +348,9 @@ EOF
 		$GMX xpm2ps -f "graph/prod_"$PDB"_ss.xpm" -o "graph/prod_"$PDB"_ss.ps" -by 10 -bx 3
 	fi
 
-	cd ../
+	
 fi
+cd ..
 done
 
 # packing up results
