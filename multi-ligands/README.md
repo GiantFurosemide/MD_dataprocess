@@ -20,12 +20,22 @@ Previous version for one ligand MD system building.
 
 # Usage
 
+Please go through examples in /tutorial for a quick start.
+
 ```bash
 # usage for md system building 
-# 0.copy 3 scrpits into work directory
+# 0.copy 3 scrpits and data into work directory
 cd /path/to/work
+# copy scripts
 cp /path/to/ligand_info_prepare.py .
 cp /path/to/mdbuild_add_multi_ligands.sh .
+cp /path/to/packup.sh .
+# copy data
+cp /path/to/protein_ligand_complex.pdb myprotein.pdb
+cp /path/to/ligand1_NEW.pdb .
+cp /path/to/ligand1_GMX.itp .
+cp /path/to/ligand2_NEW.pdb .
+cp /path/to/ligand2_GMX.itp .
 
 # 1. update ligand information in ligand_info_prepare.py,
 # then generate ligand info related scripts for mdbuild_add_multi_ligands.sh
