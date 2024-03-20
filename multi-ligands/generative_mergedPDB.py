@@ -37,8 +37,7 @@ def get_coordinates_with_distances_greater_than_threshold(listA, listB, threshol
     # 找到距离大于阈值的坐标索引
     indices = np.where(np.all(distances > threshold, axis=1))
 
-    assert np.min(distances[
-                      indices]) > threshold, f"error in get_coordinates_with_distances_greater_than_threshold, min distance should be greater than threshold '{threshold}', but got {np.min(distances[indices])}"
+    assert np.min(distances[indices]) > threshold, f"error in get_coordinates_with_distances_greater_than_threshold, min distance should be greater than threshold '{threshold}', but got {np.min(distances[indices])}"
 
     # 获取距离大于阈值的坐标
     coordinates_with_distances_greater_than_threshold = arrayA[indices]
@@ -235,15 +234,24 @@ def main(config_dict):
 if __name__ == '__main__':
 
     config_dict = {
+        # ligand structure, from acepype , contains atom H
         "ligand_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/ligand-smile/DAS.acpype/DAS_NEW.pdb",
+        # protein structure
         "input_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533.pdb", # protein
+        # output pdb path
         "output_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533-10w.pdb",
+        # number of ligand you want to insert
         "num_A_proteins": 3000,
+        # box size in Angstrom 
         "box_size": 5000,
-        "THRESHOLD1": 5.0,
+        # the minimum distance between ligand and protein
+        "THRESHOLD1": 3.5,
+        # the minimum distance between ligands
         "THRESHOLD2": 3.5,
     }
 
     main(config_dict)
 
-    # os.system(f"pymol {output_pdb}")
+    # if you need to visualize the output pdb, you can use pymol or vmd
+    #output_pdb = config_dict["output_pdb"]
+    #os.system(f"pymol {output_pdb}")
