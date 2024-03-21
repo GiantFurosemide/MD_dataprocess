@@ -43,6 +43,7 @@ def plot_scatter_and_save(folder_path, x_column, y_column, output_csv):
 
     # Save the combined data to CSV
     df = pd.DataFrame(all_data)
+    df = df.sort_values(by=x_column)
     df.to_csv(output_csv, index=False)
     print(f"> save to {output_csv}")
 
@@ -85,10 +86,12 @@ if __name__ == "__main__":
         print("Error: folder_path is None.")
         exit()
 
-    output_csv = "output.csv"  # 指定CSV文件名
+    # output_csv = "output.csv"  # 指定CSV文件名
 
-    for k in list(log_columns.keys())[1:]:
-        plot_scatter_and_save(folder_path, 'loop_ID', k, output_csv)
+    keys = list(log_columns.keys())
+    for k in keys[1:]:
+        output_csv = f"{keys[0]}-vs-{k}_data.csv"
+        plot_scatter_and_save(folder_path, keys[0], k, output_csv)
 
     print("done!")
        
