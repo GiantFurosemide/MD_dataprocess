@@ -31,6 +31,7 @@ cp /path/to/ligand_info_prepare.py .
 cp /path/to/mdbuild_add_multi_ligands.sh .
 cp /path/to/packup.sh .
 # copy data
+cp -r /path/to/mdp .
 cp /path/to/protein_ligand_complex.pdb myprotein.pdb
 cp /path/to/ligand1_NEW.pdb .
 cp /path/to/ligand1_GMX.itp .
