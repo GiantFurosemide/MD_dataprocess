@@ -95,3 +95,37 @@ do
 	mv hbond_num_${i}_ns.xvg hbond_for_frame;
 done;
 
+#############################
+# deal with all 106 us data #
+#############################
+
+echo Protein | gmx convert-tpr -s  md_0_1.tpr -o md_0_1-convert.tpr
+gmx mdrun -s md_0_1-convert.tpr -rerun coor_nc/all_protein.trr -e md_0_1-convert.edr
+echo $(seq 1 12) | gmx energy -f md_0_1-convert.edr  -o all_protein_energy.xvg
+
+mkdir truncation_trj
+function extract_frames(){
+	# extract_frames time1 time2 in ns
+	gmx trjconv \
+	-s md_0_1-convert.tpr \
+	-f coor_nc/all_protein.trr  \
+	-tu ns \
+	-b $1 \
+	-e $2  \
+	-o truncation_trj/all_protein_frame_${1}_${2}.trr <<EOF
+	Protein
+EOF
+}
+
+extract_frames 1 36591
+extract_frames 36608 74015
+extract_frames 74032 80191
+extract_frames 80208 106032
+
+gmx trjcat -f truncation_trj/*.trr -o all_protein_truncated.trr
+#truncation_trj/all_protein_frame_1_36591.trr*
+#truncation_trj/all_protein_frame_36608_74015.trr*
+#truncation_trj/all_protein_frame_74032_80191.trr*
+#truncation_trj/all_protein_frame_80208_106032.trr*
+gmx mdrun -s md_0_1-convert.tpr -rerun all_protein_truncated.trr -e md_0_1-convert.edr -gpu_id 1
+echo $(seq 1 12) | gmx energy -f md_0_1-convert.edr  -o all_protein_energy_truncated.xvg
