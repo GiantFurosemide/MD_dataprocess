@@ -1,9 +1,24 @@
 import glob
 import os
 
+begin_str = '''
+#################################################
+ start to convert trr files to xtc files (trr2xtc.py)
+#################################################
+'''
+
+end_str = '''
+#################################################
+ trr files have been converted to xtc files (trr2xtc.py)
+#################################################
+
+'''
+
 def run_cmd(cmd:str):
 	print(cmd)
 	os.system(cmd)
+
+print(begin_str)
 
 trr_files = glob.glob('./*.trr')
 gro_name= input('>Please input gro filename:\n>').strip()
@@ -16,17 +31,10 @@ for trr in trr_files:
 	cmd = f"echo 0 | gmx trjconv -f {trr} -s {gro_name} -o {outname}"
 	run_cmd(cmd)
 
-cmd = f"mkdir xtc && cd xtc && mv ../*.xtc . && gmx trjcat -f ./*.xtc -o merged.xtc"
+cmd = f"mkdir xtc ;  cd xtc ;  mv ../*.xtc . ;  gmx trjcat -f ./*.xtc -o merged.xtc"
 run_cmd(cmd)
 
-#cmd = f"cd xtc && echo 1 0|gmx trjconv -f merged.xtc -s {gro_name} -pbc nojump -center -o nojump.xtc"
-#run_cmd(cmd)
-
-#cmd = f"cd xtc && echo 1 1 0|gmx trjconv -f nojump.xtc -s {gro_name} -center -o nojump_rottrans.xtc -fit rot+trans && rm -v nojump.xtc"
-#run_cmd(cmd)
-
-#cmd = "cd xtc && mv -v merged.xtc ../.. && mv -v nojump_rottrans.xtc ../.. && rm ./*.xtc && cd .. && rm -r xtc"
-cmd = "cd xtc && mv -v merged.xtc ../.. && rm ./*.xtc && cd .. && rm -r xtc"
+cmd = "cd xtc ;  mv -v merged.xtc ../.. ;  rm ./*.xtc ;  cd .. ;  rm -r xtc"
 run_cmd(cmd)
 
-print('done!')
+print(end_str)

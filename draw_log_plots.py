@@ -76,10 +76,21 @@ def add_parser():
     else:
         print('No folder_path provided. Please use -f or --folder_path to specify the folder path.')
         return None
+begin_str = '''
+#################################################
+ start to draw log plots (draw_log_plots.py)
+#################################################
+'''
 
+end_str = '''
+#################################################
+ log plots complete (draw_log_plots.py)
+#################################################
+
+'''
 if __name__ == "__main__":
     #folder_path = input(">Please input log_txt folder's name:\n>").strip()  # 替换为你的文件夹路径
-
+    print(begin_str)
     folder_path = add_parser()
     # check folder_path
     if folder_path is None:
@@ -94,5 +105,5 @@ if __name__ == "__main__":
         plot_scatter_and_save(folder_path, keys[0], k, output_csv)
 
     print("done!")
-       
+    print(end_str)       
 

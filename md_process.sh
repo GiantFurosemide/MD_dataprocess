@@ -15,6 +15,7 @@ echo "executing post_process_mv.sh ... "
 source post_process_mv.sh
 
 # transfer trr to xtc,then merge them to a new xtc file
+cd coor_nc
 cp -v "$SCRIPTS_DIR/trr2xtc.py" .
 python trr2xtc.py
 cd $WORK_DIR

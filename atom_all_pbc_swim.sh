@@ -1,3 +1,9 @@
+
+echo -e "##################################################"
+echo -e " start executing atom_all_pbc_swim.sh"
+echo -e "##################################################"
+
+
 gmx make_ndx -f step4.1_equilibration.gro -o index_sel.ndx << EOF
 1
 q
@@ -12,3 +18,7 @@ echo 3 3 0| gmx trjconv  -s step4.1_equilibration.gro -f atom_all.xtc -fit rot+t
 
 rm -rfv whole_all.xtc
 rm -rfv atom_all.xtc
+
+echo -e "##################################################"
+echo -e " atom_all_pbc_swim.sh executed successfully!"
+echo -e "##################################################"

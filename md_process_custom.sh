@@ -78,11 +78,11 @@ sleep 5
 
 # 1. cp trr files to one directory
 cp -v "$POST_PROCESS" .
-echo "executing post_process_mv.sh ... "
-source post_process_mv.sh
+echo "executing $(basename $POST_PROCESS) ... "
 source $(basename $POST_PROCESS)
 
 # 2. transfer trr to xtc,then merge them to a new xtc file
+cd coor_nc
 cp -v "$TRR2XTC_MERGE" .
 python $(basename $TRR2XTC_MERGE)
 cd $WORK_DIR
