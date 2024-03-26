@@ -15,7 +15,7 @@ function mv_comment(){
 	_temp=${1}.tmp
 	mv -v $1 $_temp
 	grep -v '#' $_temp > $1
-	echo -e "Done processing: ${1}"
+	echo -e "Done processing: ${2}"
 }
 
 mv_comment veloc.xvg 
@@ -129,3 +129,90 @@ gmx trjcat -f truncation_trj/*.trr -o all_protein_truncated.trr
 #truncation_trj/all_protein_frame_80208_106032.trr*
 gmx mdrun -s md_0_1-convert.tpr -rerun all_protein_truncated.trr -e md_0_1-convert.edr -gpu_id 1
 echo $(seq 1 12) | gmx energy -f md_0_1-convert.edr  -o all_protein_energy_truncated.xvg
+
+########################
+# energy for all atoms
+########################
+
+# tutorial of "energy group":https://www.alexkchew.com/tutorials/using-energy-groups-in-gromacs
+
+gmx dump -s md_0_1-convert.tpr -om md_0_1-convert.mdp
+
+# 166 atom 
+atom_id=1
+gmx make_ndx -f md_0_1.tpr -o energy_group_index.ndx << INPUT
+a ${atom_id}
+name 17 sel_atom_energy
+q
+INPUT
+
+
+
+function mdp_add_energy_groups () 
+
+{ 
+
+    input_mdp_file_="$1";
+
+    output_mdp_file_="$2";
+
+    energy_groups_="$3";
+
+    cp -r "${input_mdp_file_}" "${output_mdp_file_}";
+
+    echo "" >> "${output_mdp_file_}";
+
+    echo "; ENERGY GROUPS " >> "${output_mdp_file_}";
+
+    echo "energygrps          = ${energy_groups_}" >> "${output_mdp_file_}";
+
+    echo "----- mdp_add_energy_groups -----";
+
+    echo "--> Created ${output_mdp_file_} from ${input_mdp_file_}";
+
+    echo "--> Added energy groups: ${energy_groups_}"
+
+}
+
+mdp_add_energy_groups "md_0_1-convert.mdp" "md_0_1-convert_energy_group.mdp" "sel_atom_energy"
+
+#gmx grompp -f md_0_1-convert_energy_group_change.mdp -c md_0_1-convert.tpr  -o md_0_1-convert_energy_group.tpr -n energy_group_index.ndx -maxwarn 5 -p processed.top
+gmx grompp -f md_0_1-convert_energy_group_change.mdp -c md_0_1.tpr  -o md_0_1_energy_group.tpr -n energy_group_index.ndx -maxwarn 20 -p processed.top
+
+echo Protein | gmx convert-tpr -s  md_0_1_energy_group.tpr -o md_0_1_energy_group-protein.tpr
+gmx mdrun -s md_0_1_energy_group-protein.tpr -rerun all_protein_truncated.trr -e md_0_1_energy_group-protein.edr
+
+echo $(seq 1 24) | gmx energy -f md_0_1_energy_group-protein.edr -o md_0_1_energy_group-protein.xvg
+
+
+###########################
+# then loop over all atoms
+###########################
+# 166 atom 
+
+mkdir all_atom_energy
+cd all_atom_energy
+cp ../md_0_1.tpr .
+cp ../processed.top .
+cp ../md_0_1-convert_energy_group_change.mdp .
+
+echo "energy log" > runme.log
+for i in  $(seq 1 166);
+do
+atom_id=$i
+gmx make_ndx -f md_0_1.tpr -o energy_group_index_atom_${atom_id}.ndx << INPUT
+a ${atom_id}
+name 17 sel_atom_energy
+q
+INPUT
+
+gmx grompp -f md_0_1-convert_energy_group_change.mdp -c md_0_1.tpr  -o md_0_1_energy_group_atom_${atom_id}.tpr -n  energy_group_index_atom_${atom_id}.ndx -maxwarn 20 -p processed.top
+echo Protein | gmx convert-tpr -s  md_0_1_energy_group_atom_${atom_id}.tpr -o md_0_1_energy_group_atom_${atom_id}-protein.tpr
+gmx mdrun -s md_0_1_energy_group_atom_${atom_id}-protein.tpr -rerun ../all_protein_truncated.trr -e md_0_1_energy_group_atom_${atom_id}-protein.edr
+echo $(seq 1 24) | gmx energy -f md_0_1_energy_group_atom_${atom_id}-protein.edr -o md_0_1_energy_group_atom_${atom_id}-protein.xvg
+
+echo md_0_1_energy_group_atom_${atom_id}-protein.xvg >> runme.log
+done;
+
+mkdir atom_energy_chignolin
+mv md_0_1_energy_group_atom_*-protein.xvg atom_energy_chignolin

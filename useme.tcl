@@ -1,5 +1,5 @@
 # Load the molecule
-mol new npt_ab_protein.gro
+mol new step4.1_equilibration.gro
 
 # Change display method to orthographic
 display projection Orthographic
