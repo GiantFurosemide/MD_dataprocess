@@ -155,6 +155,7 @@ def generate_merge(config_dict):
     ligand_pdb = config_dict["ligand_pdb"]
     input_pdb = config_dict["input_pdb"]
     output_pdb = config_dict["output_pdb"]
+    segid = config_dict["segid"]
 
     # Step 1: Load A.pdb and B.pdb
     A_structure = mda.Universe(ligand_pdb)
@@ -210,7 +211,7 @@ def generate_merge(config_dict):
     entities = []
     for i in range(num_A_proteins):
         u_copy = A_structure.copy()
-        u_copy.segments.segids = f'APP'
+        u_copy.segments.segids = segid
         temp_atom_group = u_copy.atoms
         temp_atom_group.residues.resids += i
         entities.append(temp_atom_group)
@@ -235,7 +236,12 @@ def main(ligand_info_list, MAX_TRY_NUMBER=10):
     for ligand_info in ligand_info_list:
         for merge_test in range(MAX_TRY_NUMBER):
             out_pdb = ligand_info["output_pdb"]
-            generate_merge(ligand_info)
+            try:
+                generate_merge(ligand_info) 
+            except ValueError as e:
+                print(f"Processing ligand {ligand_info['ligand_pdb']} and protein {ligand_info['input_pdb']}")
+                print(f"> {out_pdb} does not exist, and tried {merge_test+1} time(s) (MAX_TRY_NUMBER={MAX_TRY_NUMBER}")
+                continue
             if os.path.isfile(out_pdb):
                 break
             else:
@@ -308,6 +314,8 @@ if __name__ == '__main__':
         "THRESHOLD1": 5.5,
         # the minimum distance between ligands
         "THRESHOLD2": 5.5,
+        # chain name for ligand
+        "segid": "AAA"
     },
     {
         # ligand structure, from acepype , contains atom H
@@ -324,6 +332,8 @@ if __name__ == '__main__':
         "THRESHOLD1": 5.5,
         # the minimum distance between ligands
         "THRESHOLD2": 5.5,
+        # chain name for ligand
+        "segid": "AAB"
     }
 
     ]
