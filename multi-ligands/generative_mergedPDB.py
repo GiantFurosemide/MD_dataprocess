@@ -148,7 +148,7 @@ def rotate_atoms(atom_coords, euler_angles):
     return rotated_coords
 
 
-def main(config_dict):
+def generate_merge(config_dict):
 
     # step 0: set output path
 
@@ -230,27 +230,108 @@ def main(config_dict):
     print(f"done! output_pdb:\n > {output_pdb}")
     print(f"visualize the output_pdb by pymol & VMD:\n > pymol {output_pdb} \n > vmd {output_pdb}")
 
+def main(ligand_info_list, MAX_TRY_NUMBER=10):
+
+    for ligand_info in ligand_info_list:
+        for merge_test in range(MAX_TRY_NUMBER):
+            out_pdb = ligand_info["output_pdb"]
+            generate_merge(ligand_info)
+            if os.path.isfile(out_pdb):
+                break
+            else:
+                if merge_test >= MAX_TRY_NUMBER-1: # the last round of MAX_TRY_NUMBER
+                    print(f"{out_pdb} does not exist, and reach MAX_TRY_NUMBER({MAX_TRY_NUMBER})")
+                    exit()
+                else: 
+                    print(f"Processing ligand {ligand_info['ligand_pdb']} and protein {ligand_info['input_pdb']}")
+                    print(f"> {out_pdb} does not exist, and tried {merge_test+1} time(s) (MAX_TRY_NUMBER={MAX_TRY_NUMBER}")
+                    continue
+
+
+
+
 
 if __name__ == '__main__':
 
-    config_dict = {
+#   config_dict = {
+#       # ligand structure, from acepype , contains atom H
+#       "ligand_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/GA_NEW.pdb',
+#       # protein structure
+#       "input_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/3D4N_mutated_maestro_coot-29-282.pdb', # protein
+#       # output pdb path
+#       "output_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-10w.pdb',
+#       # number of ligand you want to insert
+#       "num_A_proteins": 6,
+#       # box size in Angstrom 
+#       "box_size": 100,
+#       # the minimum distance between ligand and protein
+#       "THRESHOLD1": 5.5,
+#       # the minimum distance between ligands
+#       "THRESHOLD2": 5.5,
+#   }
+
+#   main(config_dict)
+
+#   print("out successfully")
+
+#   config_dict = {
+#       # ligand structure, from acepype , contains atom H
+#       "ligand_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/TP_NEW.pdb',
+#       # protein structure
+#       "input_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-10w.pdb', # protein
+#       # output pdb path
+#       "output_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-TP6-10w.pdb',
+#       # number of ligand you want to insert
+#       "num_A_proteins": 6,
+#       # box size in Angstrom 
+#       "box_size": 100,
+#       # the minimum distance between ligand and protein
+#       "THRESHOLD1": 5.5,
+#       # the minimum distance between ligands
+#       "THRESHOLD2": 5.5,
+#   }
+#   main(config_dict)
+
+    config_dict_list = [
+    {
         # ligand structure, from acepype , contains atom H
-        "ligand_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/ligand-smile/DAS.acpype/DAS_NEW.pdb",
+        "ligand_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/GA_NEW.pdb',
         # protein structure
-        "input_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533.pdb", # protein
+        "input_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/3D4N_mutated_maestro_coot-29-282.pdb', # protein
         # output pdb path
-        "output_pdb": "/Users/muwang/Documents/work/project/20240131_kinase_src_swimming/data/structures/maestro-output/1y57-res266-533-10w.pdb",
+        "output_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-10w.pdb',
         # number of ligand you want to insert
-        "num_A_proteins": 3000,
+        "num_A_proteins": 6,
         # box size in Angstrom 
-        "box_size": 5000,
+        "box_size": 100,
         # the minimum distance between ligand and protein
-        "THRESHOLD1": 3.5,
+        "THRESHOLD1": 5.5,
         # the minimum distance between ligands
-        "THRESHOLD2": 3.5,
+        "THRESHOLD2": 5.5,
+    },
+    {
+        # ligand structure, from acepype , contains atom H
+        "ligand_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/TP_NEW.pdb',
+        # protein structure
+        "input_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-10w.pdb', # protein
+        # output pdb path
+        "output_pdb": '/media/muwang/新加卷/muwang/work/md_build/projects/ZYK/structure/complex/output/3D4N_mutated_maestro_coot-29-282-GA6-TP6-10w.pdb',
+        # number of ligand you want to insert
+        "num_A_proteins": 6,
+        # box size in Angstrom 
+        "box_size": 100,
+        # the minimum distance between ligand and protein
+        "THRESHOLD1": 5.5,
+        # the minimum distance between ligands
+        "THRESHOLD2": 5.5,
     }
 
-    main(config_dict)
+    ]
+
+    main(config_dict_list)
+
+
+
 
     # if you need to visualize the output pdb, you can use pymol or vmd
     #output_pdb = config_dict["output_pdb"]
