@@ -4,7 +4,7 @@
 for dir in replica*; do
     gmx grompp -c $dir/results/npt/npt_ab.gro -f mdp/md_prod.mdp -p topol.top -pp processed.top
     mkdir -p ${PWD}_eqout_${dir}
-    cp -rv $dir/results/npt/npt_ab.gro ${PWD}_eqout_${dir} && cp -rv processed.top ${PWD}_eqout_${dir}/processed.itp 
+    cp -rv $dir/results/npt/npt_ab.gro ${PWD}_eqout_${dir} ; cp -rv processed.top ${PWD}_eqout_${dir}/processed.itp 
     
     file_count=$(ls -1 "${PWD}_eqout_${dir}" | wc -l)
     if [ "$file_count" -eq 2 ]; 
