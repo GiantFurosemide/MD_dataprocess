@@ -12,7 +12,7 @@ POST_PROCESS=$SCRIPTS_DIR/post_process_mv.sh
 # 2. convert .trr to xtc and merge to one xtc
 TRR2XTC_MERGE=$SCRIPTS_DIR/trr2xtc.py
 # 3. PBC process and align to reference
-PBC_PROCESS_ROT_TRANS=$SCRIPTS_DIR/atom_only_pbc.sh
+PBC_PROCESS_ROT_TRANS=$SCRIPTS_DIR/atom_all_atom_pbc.sh
 # 4. draw plots based on log files from 512
 DRAW_LOG_PLOTS=$SCRIPTS_DIR/draw_log_plots.py
 # 5. vmd visualized with vmd script useme.tcl
