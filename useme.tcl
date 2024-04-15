@@ -41,7 +41,7 @@ mol modstyle 0 0 NewCartoon
 # mol delrep 0 top
 
 # Load data to molecule
-mol addfile atom_rottrans.xtc waitfor all
+mol addfile atom_rottrans_all.xtc waitfor all
 
 # Save visualization state
 save_state useme.vmd
