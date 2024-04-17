@@ -3,7 +3,7 @@ mol new step4.1_equilibration.gro
 
 # Change display method to orthographic
 display projection Orthographic
-color Display Background white
+
 # Create representation by expression "protein" and change "draw method" to "NewCartoon"
 # mol 0
 mol representation NewCartoon 
@@ -30,9 +30,10 @@ mol addrep top
 #mol selection {resid 404 to 406}
 #mol addrep top
 
-mol modstyle 0 0 NewCartoon
+mol modstyle 1 0 NewCartoon
 #mol modcolor 5 0 ColorID 3
 #mol modstyle 4 0 Licorice 0.300000 12.000000 12.000000
+#mol modmaterial 5 0 BrushedMetal
 
 # Save visualization state
 # save_state useme.vmd
@@ -49,3 +50,5 @@ save_state useme.vmd
 #
 menu rmsdtt on
 axes location Off
+color Display Background white
+display resize 800 800
