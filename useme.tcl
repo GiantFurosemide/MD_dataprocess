@@ -48,3 +48,4 @@ save_state useme.vmd
 
 #
 menu rmsdtt on
+axes location Off
