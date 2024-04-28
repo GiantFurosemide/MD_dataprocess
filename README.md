@@ -51,7 +51,7 @@ Read log files in directory 'log_txt', plot temperature/pressure/kinetic/potenti
 
 ## Usage
 
-1. updata variable SCRIPTS_DIR in md_process_custom.sh to access to all neccesery scripts.
+1. updata variable **SCRIPTS_DIR** in md_process_custom.sh to access to all neccesery scripts.
 2. copy  **md_process_custom.sh** and **md_process_config.sh** to data's directory, for example **'md_post_output'**. source it.
    ```
    bash
