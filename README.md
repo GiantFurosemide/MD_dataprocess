@@ -51,18 +51,16 @@ Read log files in directory 'log_txt', plot temperature/pressure/kinetic/potenti
 
 ## Usage
 
-1. updata variable SCRIPTS_DIR in md_process.sh to access to all neccesery scripts.
-2. copy md_process.sh to data's directory, for example 'md_post_output', source it.
-3. input initial gro file
+1. updata variable SCRIPTS_DIR in md_process_custom.sh to access to all neccesery scripts.
+2. copy  **md_process_custom.sh** and **md_process_config.sh** to data's directory, for example **'md_post_output'**. source it.
+   ```
+   bash
+   source ./md_process_custom.sh -f md_process_config.sh
+   ```
+
+   if you want to use default analysis scripts listed in **md_process_custom.sh**
+3. input initial gro file(absolute path)
 4. input atom index for PBC treatment and centering.
-
-use in customized mode:
-
-specify updated value in md_process_config.sh
-
-```bash
-./md_process_custom.sh -f md_process_config.sh
-```
 
 ## TODO
 
