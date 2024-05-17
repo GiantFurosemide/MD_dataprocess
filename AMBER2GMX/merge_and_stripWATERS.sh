@@ -1,7 +1,7 @@
 
 #!/bin/bash
 
-
+# first copy parm_file/rst7_file and md_post_output to this path
 # input files
 parm_file="charmm2amber.parm7"
 rst7_file="amber.rst7"
@@ -12,7 +12,7 @@ parm_no_water="charmm2amber_no_water.parm7"
 #vel_all="velocity.nc"
 #out_trr="merge_amber.nc"
 # then run 
-
+no_water_outdir="nowater_out"
 
 ############################################################################################################
 # 加载Amber模块 
@@ -30,7 +30,7 @@ parm $parm_file
 reference $rst7_file
 trajin coor_nc/*.nc
 strip :WAT
-trajout ${coor_all}
+trajout ${coor_no_water}
 run
 quit
 EOF
@@ -47,7 +47,9 @@ EOF
 cpptraj -i cpptraj001.in
 
 cat > no_water.parmed <<EOF
-loadRestrt ${rst7_no_water}
+parm ${parm_file}
+loadRestrt ${rst7_file}
+strip :WAT
 outparm ${parm_no_water}
 run
 EOF
@@ -55,3 +57,9 @@ parmed -i no_water.parmed
 
 conda deactivate
 ############################################################################################################
+
+# wrap all data
+mkdir $no_water_outdir
+mv ${coor_no_water} ${no_water_outdir}
+mv ${rst7_no_water} ${no_water_outdir}
+mv ${parm_no_water} ${no_water_outdir}
