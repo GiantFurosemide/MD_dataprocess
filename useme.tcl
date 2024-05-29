@@ -33,7 +33,7 @@ mol addrep top
 mol modstyle 1 0 NewCartoon
 mol modcolor 1 0 ColorID 6
 
-mol modstyle 4 0 Licorice
+mol modstyle 4 0 VDW
 mol modcolor 4 0 ColorID 3
 mol modmaterial 4 0 Opaque
 #mol modcolor 5 0 ColorID 3
