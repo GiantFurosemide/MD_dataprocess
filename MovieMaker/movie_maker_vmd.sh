@@ -16,9 +16,17 @@
 # decoder 'prores' for macos and ubuntu
 # -csf [0-51]: 0 lossless 23 default 51 worst quality
 out_movie_name='3imn_CYP'
-ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v prores -crf 0  ${out_movie_name}_r25.mov
+ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v prores -crf 0  ${out_movie_name}_r25_mac.mov
 #ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v prores -crf 0  ${out_movie_name}_r25.mp4
 
 # OR
 # decoder 'libx264' for ubuntu, but not mac os
-ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v libx264 -crf 0  ${out_movie_name}_r25.mov
+ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v libx264 -crf 0  ${out_movie_name}_r25_win.mov
+
+
+function make_movie(){
+    out_movie_name=$1
+    ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v prores -crf 0  ${out_movie_name}_r25_mac.mov
+    ffmpeg -an -i ./${out_movie_name}.%05d.ppm -r 25 -c:v libx264 -crf 0  ${out_movie_name}_r25_win.mov
+}
+make_movie '3imn_CYP'
