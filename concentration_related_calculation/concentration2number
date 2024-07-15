@@ -16,8 +16,8 @@ def cal_concentration2number(bs,c):
 # add argparse for box_size and concentration 
 def add_parser():
     parser = argparse.ArgumentParser(description="Calculate the number of ligands in a box given the box size(in Angstrom) and concentration(in μM).")
-    parser.add_argument('-bs','--box_size', type=float, help='The size of the box in Angstrom')
-    parser.add_argument('-c','--concentration', type=float, help='The concentration of the ligand in μM')
+    parser.add_argument('-bs','--box_size', type=float, help='The size of the box in Angstrom',required=True)
+    parser.add_argument('-c','--concentration', type=float, help='The concentration of the ligand in μM',required=True)
     args = parser.parse_args()
     return args
 
