@@ -1,4 +1,8 @@
+## This script is used to generate volmap.tcl file for VMD to calculate the density map of a specific atom selection.
+
+# change here
 atom_selection='resname STI and not hydrogen'
+# ourput file name will be ${dx_name}_volmap_out.dx
 dx_name=ABL1r3_0003
 
 # 1. generate dx file by in VMD
