@@ -21,7 +21,9 @@ def run_cmd(cmd:str):
 print(begin_str)
 
 trr_files = glob.glob('./*.trr')
-gro_name= input('>Please input gro filename:\n>').strip()
+with open("../input_gro_path.txt", 'r') as in_file:
+	gro_name = in_file.readlines()[0].strip()
+#gro_name= input('>Please input gro filename:\n>').strip()
 cmd=f"cp -v {gro_name} ../step4.1_equilibration.gro" # prepare gro file for next step
 run_cmd(cmd)
 
