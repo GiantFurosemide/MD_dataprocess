@@ -15,14 +15,14 @@ frame_step=20
 echo  volmap density [atomselect top \"$atom_selection\"] -res 1.0 -weight mass -allframes -combine avg -o ${dx_name}_volmap_out.dx > volmap.tcl
 
 # 2. run this command in VMD console
-echo "run this command in VMD console:"
-echo "> source volmap.tcl"
-
-echo -e "run this script in vmd to make movies. This will generate the images"
-echo -e "> source make_trajectory.tcl"
-
-echo -e "\nthen run this in bash. This will renumber the files and make the movie"
-echo -e "> cd movies ; source renumber.sh ;make_movie ${frame_name}"
+#cho "run this command in VMD console:"
+#cho "> source volmap.tcl"
+#
+#cho -e "run this script in vmd to make movies. This will generate the images"
+#cho -e "> source make_trajectory.tcl"
+#
+#cho -e "\nthen run this in bash. This will renumber the files and make the movie"
+#cho -e "> cd movies ; source renumber.sh ;make_movie ${frame_name}"
 
 ################################################
 mkdir $movie_maker_output_dir
@@ -135,7 +135,9 @@ echo "############################################"
 echo "run this command in VMD console to generate the density map, and then make the images for movie:"
 echo "source volmap.tcl"
 echo "source make_trajectory.tcl"
-
+cat volmap.tcl make_trajectory.tcl > volmap_make_trajectory.tcl
+echo "> or run this command in VMD console to excute both step:"
+echo "source volmap_make_trajectory.tcl"
 
 echo -e "\nthen run this in bash to renumber the files and make the movie:"
-echo -e "cd movies ; source renumber.sh ;make_movie ${frame_name}"
+echo -e "cd ${movie_maker_output_dir} ; source renumber.sh ;make_movie ${frame_name}"
