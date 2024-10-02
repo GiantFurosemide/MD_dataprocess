@@ -11,10 +11,11 @@
 # 1. cp trr files to one directory
 #POST_PROCESS=$SCRIPTS_DIR/post_process_mv.sh
 # 2. convert .trr to xtc and merge to one xtc
-TRR2XTC_MERGE='/home/muwang/opt/work_scripts/MD_dataprocess/trr2xtc_readline.py'
+TRR2XTC_MERGE='/home/muwang/opt/work_scripts/MD_dataprocess/trr2xtc_readline_tpr.py'
 # 3. PBC process and align to reference
 #PBC_PROCESS_ROT_TRANS=$SCRIPTS_DIR/atom_all_pbc_swim.sh
 #PBC_PROCESS_ROT_TRANS=$SCRIPTS_DIR/atom_all_atom_pbc_GJZX_ACLY.sh
+PBC_PROCESS_ROT_TRANS='/home/muwang/opt/work_scripts/MD_dataprocess/atom_all_atom_pbc_tpr.sh'
 # 4. draw plots based on log files from 512
 #DRAW_LOG_PLOTS=$SCRIPTS_DIR/draw_log_plots.py
 # 5. vmd visualized with vmd script useme.tcl
