@@ -98,19 +98,19 @@ default_mdp_name = os.path.abspath("../production_tmp.mdp")
 tpr_name = os.path.abspath("../step4.1_equilibration.tpr")
 
 # genertate tpr file
-cmd = f"echo 0 | gmx grompp -f {default_mdp_name} -c {gro_name} -p {itp_name} -o {tpr_name}"
+cmd = f"echo 0 | gmx grompp -f '{default_mdp_name}' -c '{gro_name}' -p '{itp_name}' -o '{tpr_name}'"
 run_cmd(cmd)
 
 for trr in trr_files:
 	filename  =  os.path.basename(trr).split('.')[0]
 	outname = filename+'.xtc'
-	cmd = f"echo 0 | gmx trjconv -f {trr} -s {tpr_name} -o {outname}"
+	cmd = f"echo 0 | gmx trjconv -f '{trr}' -s '{tpr_name}' -o '{outname}'"
 	run_cmd(cmd)
 
 	# check if the xtc file is generated, if not, re-execute the command, up to 20 times
 	if not os.path.exists(outname):
 		print(f"Error: {outname} is not generated.")
-		for i in range(20):
+		for i in range(100):
 			print(f"Re-executing the command: {cmd}")
 			run_cmd(cmd)
 			if os.path.exists(outname):
