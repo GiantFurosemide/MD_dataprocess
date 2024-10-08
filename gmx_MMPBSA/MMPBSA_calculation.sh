@@ -1,3 +1,8 @@
+
+
+
+
+
 ## 3. make index file
 # make index operation file  (group 1-18, 19-36, 37-54, 1-36 is 0 18 19 20 start from 0)
 # 1-36 as 'recepter'
