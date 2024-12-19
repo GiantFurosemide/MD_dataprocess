@@ -11,7 +11,7 @@ cmd = ""
 for i in nc_files:
     cmd += f"trajin {i}\n"
 cpptraj_file_in += cmd
-cpptraj_file_in += "trajout merge.nc \n"
+cpptraj_file_in += "trajout merge.nc netcdf \n"
 
 with open("cpptraj.in","w") as file_out:
     file_out.write(cpptraj_file_in)
